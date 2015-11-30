@@ -1,0 +1,1180 @@
+<!doctype html><html lang="en">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Keygen and Client Certificates</title>
+  <link href="https://www.w3.org/StyleSheets/TR/W3C-WD" rel="stylesheet">
+  <meta content="WD" name="w3c-status">
+<style data-fill-with="stylesheet">/* This section copied from the W3C's ED styles. */
+
+	body {
+		color: black;
+		font-family: sans-serif;
+		margin: 0 auto;
+		max-width: 50em;
+		padding: 2em 1em 2em 70px;
+	}
+	:link { color: #00C; background: transparent }
+	:visited { color: #609; background: transparent }
+	a[href]:active { color: #C00; background: transparent }
+	a[href]:hover { background: #ffa }
+
+	a[href] img { border-style: none }
+
+	h1, h2, h3, h4, h5, h6 { text-align: left }
+	h1, h2, h3 { color: #005A9C; }
+	h1 { font: 170% sans-serif }
+	h2 { font: 140% sans-serif }
+	h3 { font: 120% sans-serif }
+	h4 { font: bold 100% sans-serif }
+	h5 { font: italic 100% sans-serif }
+	h6 { font: small-caps 100% sans-serif }
+
+	.hide { display: none }
+
+	div.head { margin-bottom: 1em }
+	div.head h1 { margin-top: 2em; clear: both }
+	div.head table { margin-left: 2em; margin-top: 2em }
+
+	p.copyright { font-size: small }
+	p.copyright small { font-size: small }
+
+	pre { margin-left: 2em }
+	dt { font-weight: bold }
+
+	ul.toc, ol.toc {
+		list-style: none;
+	}
+
+/* The rest copied from the CSSWG's default.css */
+
+	body {
+		counter-reset: exampleno figure issue;
+		max-width: 50em;
+		margin: 0 auto !important;
+		line-height: 1.5;
+	}
+
+/******************************************************************************/
+/*                                Sectioning                                  */
+/******************************************************************************/
+
+/** Headings ******************************************************************/
+
+	h1, h2, h3, h4, h5, h6, dt {
+		page-break-after: avoid;
+	}
+
+	h2, h3, h5, h6 {
+		margin-top: 3em;
+	}
+	h4 {
+		 margin-top: 4em;
+	}
+
+/** Subheadings ***************************************************************/
+
+	h1 + h2,
+	#subtitle + h2 {
+		/* #subtitle is a subtitle in an H2 under the H1 */
+		margin-top: 0;
+	}
+	h2 + h3,
+	h3 + h4,
+	h4 + h5,
+	h5 + h6 {
+		margin-top: 1.2em; /* = 1 x line-height */
+	}
+
+/** Section divider ***********************************************************/
+	/* <hr> used to separate TMI into the second half of a section              */
+	hr:not([title]) {
+		font-size: 1.5em;
+		text-align: center;
+		margin: 1em auto;
+		height: auto;
+		border: transparent solid 0;
+		background: transparent;
+	}
+	hr:not([title])::before {
+		content: "\1F411\2003\2003\1F411\2003\2003\1F411";
+	}
+	/* note: <hr> with title separates document header from contents */
+
+/******************************************************************************/
+/*                            Paragraphs and Lists                            */
+/******************************************************************************/
+
+	p {
+		margin: 1em 0;
+	}
+	dd     > p:first-child,
+	li     > p:first-child {
+		margin-top: 0;
+	}
+
+	ul, ol {
+		margin-left: 0;
+		padding-left: 2em;
+	}
+	li {
+		margin: 0.25em 2em 0.5em 0;
+		padding-left: 0;
+	}
+
+	dl dd {
+		margin: 0 0 1em 2em;
+	}
+	.head dd {
+		margin-bottom: 0;
+	}
+
+	/* Style for algorithms */
+	ol.algorithm ol {
+	 border-left: 1px solid #90b8de;
+	 margin-left: 1em;
+	}
+	ol.algorithm ol.algorithm {
+	 border-left: none;
+	 margin-left: 0;
+	}
+
+	/* Style for switch/case <dl>s */
+	dl.switch > dd > ol.only {
+	 margin-left: 0;
+	}
+	dl.switch > dd > ol.algorithm {
+	 margin-left: -2em;
+	}
+	dl.switch {
+	 padding-left: 2em;
+	}
+	dl.switch > dt {
+	 text-indent: -1.5em;
+	 margin-top: 1em;
+	}
+	dl.switch > dt + dt {
+	 margin-top: 0;
+	}
+	dl.switch > dt::before {
+	 content: '\21AA';
+	 padding: 0 0.5em 0 0;
+	 display: inline-block;
+	 width: 1em;
+	 text-align: right;
+	 line-height: 0.5em;
+	}
+
+	/* Style for paragraphs I know are in MD-genned lists */
+	[data-md] > :first-child {
+		margin-top: 0;
+	}
+	[data-md] > :last-child {
+		margin-bottom: 0;
+	}
+
+/** Inline Lists **************************************************************/
+	/* This is mostly to make the list inside the CR exit criteria more compact. */
+
+	ol.inline, ol.inline li {
+		display: inline;
+		padding: 0; margin: 0;
+	}
+	ol.inline {
+		counter-reset: list-item;
+	}
+	ol.inline li {
+		counter-increment: list-item;
+	}
+	ol.inline li::before {
+		content: "(" counter(list-item) ") ";
+		font-weight: bold;
+	}
+
+/** Terminology Markup ********************************************************/
+
+
+/******************************************************************************/
+/*                                 Inline Markup                              */
+/******************************************************************************/
+
+/** Terminology Markup ********************************************************/
+	dfn   { /* Defining instance */
+		font-weight: bolder;
+	}
+	a > i { /* Instance of term */
+		font-style: normal;
+	}
+	dt dfn code, code.idl {
+		font-size: inherit;
+	}
+	dfn var {
+		font-style: normal;
+	}
+
+/** Change Marking ************************************************************/
+
+	del { color: red;  text-decoration: line-through; }
+	ins { color: #080; text-decoration: underline;    }
+
+/** Miscellaneous improvements to inline formatting ***************************/
+
+	sup {
+		vertical-align: super;
+		font-size: 80%
+	}
+
+/******************************************************************************/
+/*                                    Code                                    */
+/******************************************************************************/
+
+/** General monospace/pre rules ***********************************************/
+
+	pre, code {
+		font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+		font-size: .9em;
+		page-break-inside: avoid;
+	}
+	pre {
+		margin-top: 1em;
+		margin-bottom: 1em;
+		overflow: auto;
+	}
+
+/** Syntax-Highlighted Code ***************************************************/
+
+	.example pre[class*="language-"],
+	.example [class*="language-"] pre,
+	.example pre[class*="lang-"],
+	.example [class*="lang-"] pre {
+		background: transparent; /* Prism applies a gray background that doesn't work well in the template. */
+	}
+
+/** Example Code **************************************************************/
+
+	div.html, div.xml,
+	pre.html, pre.xml {
+		padding: 0.5em;
+		margin: 1em 0;
+		position: relative;
+		clear: both;
+		color: #600;
+	}
+	pre.example,
+	pre.html,
+	pre.xml {
+		padding-top: 1.5em;
+	}
+
+	pre.illegal, .illegal pre
+	pre.deprecated, .deprecated pre {
+		color: red;
+	}
+
+/** IDL fragments *************************************************************/
+
+	pre.idl {
+		/* Match blue propdef boxes */
+		padding: .5em 1em;
+		background: #DEF;
+		margin: 1.2em 0;
+		border-left: 0.5em solid #8CCBF2;
+	}
+	pre.idl :link, pre.idl :visited {
+		color:inherit;
+		background:transparent;
+	}
+
+/** Inline CSS fragments ******************************************************/
+
+	.css.css, .property.property, .descriptor.descriptor {
+		color: #005a9c;
+		font-size: inherit;
+		font-family: inherit;
+	}
+	.css::before, .property::before, .descriptor::before {
+		content: "‘";
+	}
+	.css::after, .property::after, .descriptor::after {
+		content: "’";
+	}
+	.property, .descriptor {
+		/* Don't wrap property and descriptor names */
+		white-space: nowrap;
+	}
+	.type { /* CSS value <type> */
+	font-style: italic;
+	}
+	pre .property::before, pre .property::after {
+		content: "";
+	}
+
+/** Inline markup fragments ***************************************************/
+
+	code.html, code.xml {
+		color: #660000;
+	}
+
+/** Autolinks produced using Bikeshed *****************************************/
+
+	[data-link-type="property"]::before,
+	[data-link-type="propdesc"]::before,
+	[data-link-type="descriptor"]::before,
+	[data-link-type="value"]::before,
+	[data-link-type="function"]::before,
+	[data-link-type="at-rule"]::before,
+	[data-link-type="selector"]::before,
+	[data-link-type="maybe"]::before {
+		content: "‘";
+	}
+	[data-link-type="property"]::after,
+	[data-link-type="propdesc"]::after,
+	[data-link-type="descriptor"]::after,
+	[data-link-type="value"]::after,
+	[data-link-type="function"]::after,
+	[data-link-type="at-rule"]::after,
+	[data-link-type="selector"]::after,
+	[data-link-type="maybe"]::after {
+		content: "’";
+	}
+
+	[data-link-type].production::before,
+	[data-link-type].production::after,
+	.prod [data-link-type]::before,
+	.prod [data-link-type]::after {
+		content: "";
+	}
+
+	[data-link-type=element]         { font-family: monospace; }
+	[data-link-type=element]::before { content: "<" }
+	[data-link-type=element]::after  { content: ">" }
+
+	[data-link-type=biblio] {
+		white-space: pre;
+	}
+
+
+/******************************************************************************/
+/*                                    Links                                   */
+/******************************************************************************/
+
+/** General Hyperlinks ********************************************************/
+
+	/* We hyperlink a lot, so make it less intrusive */
+	a:link, a:visited {
+		color: inherit;
+		text-decoration: none;
+		border-bottom: 1px solid silver;
+	}
+	@supports (text-decoration-color: silver) {
+		a:link, a:visited {
+			border-bottom: none;
+			text-decoration: underline;
+			text-decoration-color: silver;
+		}
+		a:visited {
+			text-decoration-style: dotted;
+		}
+	}
+
+	a.logo:link, a.logo:visited { /* backout above styling for W3C logo */
+		padding: 0;
+		border: none;
+		text-decoration: none;
+	}
+
+/** Self-Links ****************************************************************/
+	/* Auto-generated links from an element to its own anchor, for usability */
+
+	.heading, .issue, .note, .example, li, dt {
+		position: relative;
+	}
+	a.self-link {
+		position: absolute;
+		top: 0;
+		left: -2.5em;
+		width: 2em;
+		height: 2em;
+		text-align: center;
+		border: none;
+		transition: opacity .2s;
+		opacity: .5;
+	}
+	a.self-link:hover {
+		opacity: 1;
+	}
+	.heading > a.self-link {
+		font-size: 83%;
+	}
+	li > a.self-link {
+		left: -3.5em;
+	}
+	dfn > a.self-link {
+		top: auto;
+		left: auto;
+		opacity: 0;
+		width: 1.5em;
+		height: 1.5em;
+		background: gray;
+		color: white;
+		font-style: normal;
+		transition: opacity .2s, background-color .2s, color .2s;
+	}
+	dfn:hover > a.self-link {
+		opacity: 1;
+	}
+	dfn > a.self-link:hover {
+		color: black;
+	}
+
+	a.self-link::before            { content: "¶"; }
+	.heading > a.self-link::before { content: "§"; }
+	dfn > a.self-link::before      { content: "#"; }
+
+/******************************************************************************/
+/*                                    Images                                  */
+/******************************************************************************/
+
+	img {
+		border-style: none;
+		color: white;
+	}
+
+	figure, div.figure, div.sidefigure {
+		page-break-inside: avoid;
+	}
+
+	div.figure, p.figure, div.sidefigure, figure {
+		text-align: center;
+		margin: 2.5em 0;
+	}
+	div.figure pre, div.sidefigure pre, figure pre {
+		text-align: left;
+		display: table;
+		margin: 1em auto;
+	}
+	.figure table, figure table {
+		margin: auto;
+	}
+	div.sidefigure, figure.sidefigure {
+		float: right;
+		width: 50%;
+		margin: 0 0 0.5em 0.5em
+	}
+	div.figure img, div.sidefigure img, figure img,
+	div.figure object, div.sidefigure object, figure object {
+		display: block;
+		margin: auto;
+		max-width: 100%
+	}
+	p.caption, figcaption, caption {
+		text-align: center;
+		font-style: italic;
+		font-size: 90%;
+	}
+	p.caption:not(.no-marker)::before, figcaption:not(.no-marker)::before {
+		content: "Figure " counter(figure) ". ";
+	}
+	p.caption::before, figcaption::before, figcaption > .marker {
+		font-weight: bold;
+	}
+	p.caption, figcaption {
+		counter-increment: figure;
+	}
+
+	/* DL list is indented 2em, but figure inside it is not */
+	dd > div.figure, dd > figure { margin-left: -2em }
+
+	pre.ascii-art {
+		display: table; /* shrinkwrap */
+		margin: 1em auto;
+	}
+
+	/* Displaying the output of text layout, particularly when
+		 line-breaking is being invoked, and thus having a
+		 visible width is good. */
+	pre.output {
+		margin: 1em;
+		border: solid thin silver;
+		padding: 0.25em;
+		display: table;
+	}
+
+/******************************************************************************/
+/*                             Colored Boxes                                  */
+/******************************************************************************/
+
+	.issue, .note, .example, .why, .advisement, blockquote {
+		padding: .5em;
+		border: .5em;
+		border-left-style: solid;
+		page-break-inside: avoid;
+	}
+	span.issue, span.note {
+		padding: .1em .5em .15em;
+		border-right-style: solid;
+	}
+
+	div.issue,
+	div.note,
+	div.example,
+	details.why,
+	blockquote {
+		margin: 1em auto;
+	}
+	.note  > p:first-child,
+	.issue > p:first-child,
+	blockquote > :first-child {
+		margin-top: 0;
+	}
+	blockquote > :last-child {
+		margin-bottom: 0;
+	}
+
+/** Blockquotes ***************************************************************/
+
+	blockquote {
+		border-color: silver;
+	}
+
+/** Open issue ****************************************************************/
+	/* not intended for CR+ publication */
+
+	.issue {
+		border-color: #E05252;
+		background: #FBE9E9;
+		counter-increment: issue;
+		overflow: auto;
+	}
+	.issue:not(.no-marker)::before {
+		content: "ISSUE " counter(issue);
+		padding-right: 1em;
+	}
+	.issue::before, .issue > .marker {
+		color: #AE1E1E;
+	}
+
+/** Example *******************************************************************/
+
+	.example {
+		border-color: #E0CB52;
+		background: #FCFAEE;
+		counter-increment: exampleno;
+		overflow: auto;
+		clear: both;
+	}
+	.example::before, .example > .marker {
+		color: #827017;
+		font-family: sans-serif;
+		min-width: 7.5em;
+		display: block;
+	}
+	.example:not(.no-marker)::before {
+		content: "EXAMPLE";
+		content: "EXAMPLE " counter(exampleno);
+	}
+	.invalid.example::before, .invalid.example > .marker,
+	.illegal.example::before, .illegal.example > .marker {
+		color: red;
+	}
+	.invalid.example:not(.no-marker)::before,
+	.illegal.example:not(.no-marker)::before {
+		content: "INVALID EXAMPLE";
+		content: "INVALID EXAMPLE" counter(exampleno);
+	}
+
+/** Non-normative Note ********************************************************/
+
+	.note, .why {
+		border-color: #52E052;
+		background: #E9FBE9;
+		overflow: auto;
+	}
+	.note::before, .note > .marker {
+		display: block;
+		color: hsl(120, 70%, 30%);
+	}
+
+/** Advisement Box ************************************************************/
+	/*  for attention-grabbing normative statements */
+
+	.advisement {
+		border-color: orange;
+		border-style: none solid;
+		background: #FFEECC;
+		text-align: center;
+	}
+	strong.advisement {
+		display: block;
+	}
+	/*.advisement::before { color: #FF8800; } */
+
+/** ??? ***********************************************************************/
+
+	details.why {
+		border-color: #52E052;
+		background: #E9FBE9;
+		display: block;
+	}
+
+	details.why > summary {
+		font-style: italic;
+		display: block;
+	}
+
+	details.why[open] > summary {
+		border-bottom: 1px silver solid;
+	}
+
+/** Spec Obsoletion Notice ****************************************************/
+	/* obnoxious obsoletion notice for older/abandoned specs. */
+
+	details.annoying-warning {
+		display: block;
+	}
+
+	details.annoying-warning[open] {
+		background: #fdd;
+		color: red;
+		font-weight: bold;
+		text-align: center;
+		padding: .5em;
+		border: thick solid red;
+		border-radius: 1em;
+	}
+@media not print {
+	details.annoying-warning[open] {
+		position: fixed;
+		left: 1em;
+		right: 1em;
+		bottom: 1em;
+		z-index: 1000;
+	}
+}
+
+	details.annoying-warning:not([open]) > summary {
+		background: #fdd;
+		color: red;
+		font-weight: bold;
+		text-align: center;
+		padding: .5em;
+	}
+
+/******************************************************************************/
+/*                                    Tables                                  */
+/******************************************************************************/
+
+/** Property/Descriptor Definition Tables *************************************/
+
+	table.propdef, table.propdef-extra,
+	table.descdef, table.definition-table {
+		page-break-inside: avoid;
+		width: 100%;
+		margin: 1.2em 0;
+		border-left: 0.5em solid #8CCBF2;
+		padding: 0.5em 1em;
+		background: #DEF;
+		border-spacing: 0;
+	}
+
+	table.propdef td, table.propdef-extra td,
+	table.descdef td, table.definition-table td,
+	table.propdef th, table.propdef-extra th,
+	table.descdef th, table.definition-table th {
+		padding: 0.5em;
+		vertical-align: baseline;
+		border-bottom: 1px solid #bbd7e9;
+	}
+	table.propdef > tbody > tr:last-child th,
+	table.propdef-extra > tbody > tr:last-child th,
+	table.descdef > tbody > tr:last-child th,
+	table.definition-table > tbody > tr:last-child th,
+	table.propdef > tbody > tr:last-child td,
+	table.propdef-extra > tbody > tr:last-child td,
+	table.descdef > tbody > tr:last-child td,
+	table.definition-table > tbody > tr:last-child td {
+		border-bottom: 0;
+	}
+
+	table.propdef th,
+	table.propdef-extra th,
+	table.descdef th,
+	table.definition-table th {
+		font-style: italic;
+		font-weight: normal;
+		width: 8.3em;
+		padding-left: 1em;
+	}
+
+	/* For when values are extra-complex and need formatting for readability */
+	table td.pre {
+		white-space: pre-wrap;
+	}
+
+	/* A footnote at the bottom of a propdef */
+	table.propdef td.footnote,
+	table.propdef-extra td.footnote,
+	table.descdef td.footnote,
+	table.definition-table td.footnote {
+		padding-top: 0.6em;
+	}
+	table.propdef td.footnote::before,
+	table.propdef-extra td.footnote::before,
+	table.descdef td.footnote::before,
+	table.definition-table td.footnote::before {
+		content: " ";
+		display: block;
+		height: 0.6em;
+		width: 4em;
+		border-top: thin solid;
+	}
+
+/** Profile Tables ************************************************************/
+	/* table of required features in a CSS profile */
+
+	table.features th {
+		background: #00589f;
+		color: #fff;
+		text-align: left;
+		padding: 0.2em 0.2em 0.2em 0.5em;
+	}
+	table.features td {
+		vertical-align: top;
+		border-bottom: 1px solid #ccc;
+		padding: 0.3em 0.3em 0.3em 0.7em;
+	}
+
+/** Data tables (and properly marked-up proptables) ***************************/
+	/*
+		 <table class="data"> highlights structural relationships in a table
+		 when correct markup is used (e.g. thead/tbody, th vs. td, scope attribute)
+
+		 Use class="complex data" for particularly complicated tables --
+		 (This will draw more lines: busier, but clearer.)
+
+		 Use class="long" on table cells with paragraph-like contents
+		 (This will adjust text alignment accordingly.)
+	*/
+
+	.data, .proptable {
+		margin: 1em auto;
+		border-collapse: collapse;
+		width: 100%;
+		border: hidden;
+	}
+	.data {
+		text-align: center;
+		width: auto;
+	}
+	.data caption {
+		width: 100%;
+	}
+
+	.data td, .data th,
+	.proptable td, .proptable th {
+		padding: 0.5em;
+		border-width: 1px;
+		border-color: silver;
+		border-top-style: solid;
+	}
+
+	.data thead td:empty {
+		padding: 0;
+		border: 0;
+	}
+
+	.data thead th[scope="row"],
+	.proptable thead th[scope="row"] {
+		text-align: right;
+		color: inherit;
+	}
+
+	.data thead,
+	.proptable thead,
+	.data tbody,
+	.proptable tbody {
+		color: inherit;
+		border-bottom: 2px solid;
+	}
+
+	.data colgroup {
+		border-left: 2px solid;
+	}
+
+	.data tbody th:first-child,
+	.proptable tbody th:first-child ,
+	.data tbody td[scope="row"]:first-child,
+	.proptable tbody td[scope="row"]:first-child {
+		text-align: right;
+		color: inherit;
+		border-right: 2px solid;
+		border-top: 1px solid silver;
+		padding-right: 1em;
+	}
+	.data.define td:last-child {
+		text-align: left;
+	}
+
+	.data tbody th[rowspan],
+	.proptable tbody th[rowspan],
+	.data tbody td[rowspan],
+	.proptable tbody td[rowspan]{
+		border-left:  1px solid silver;
+		border-right: 1px solid silver;
+	}
+
+	.complex.data th,
+	.complex.data td {
+		border: 1px solid silver;
+	}
+
+	.data td.long {
+	 vertical-align: baseline;
+	 text-align: left;
+	}
+
+	.data img {
+		vertical-align: middle;
+	}
+
+
+/******************************************************************************/
+/*                                  Indices                                   */
+/******************************************************************************/
+
+
+/** Table of Contents *********************************************************/
+
+	/* ToC not indented, but font style shows hierarchy */
+	ul.toc           { margin: 1em 0;     font-weight: bold; /*text-transform: uppercase;*/ }
+	ul.toc ul        { margin: 0;        font-weight: normal; text-transform: none; }
+	ul.toc ul ul     { margin: 0 0 0 2em; font-style: italic; }
+	ul.toc ul ul ul  { margin: 0; }
+	ul.toc > li      { margin: 1.5em 0; }
+	ul.toc ul.toc li { margin: 0.3em 0 0 0; }
+
+	ul.toc, ul.toc ul, ul.toc li { padding: 0; line-height: 1.3; }
+	ul.toc a { text-decoration: none; border-bottom-style: none; }
+	ul.toc a:hover, ul.toc a:focus  { border-bottom-style: solid; }
+	@supports (text-decoration-style: solid) {
+		ul.toc a:hover, ul.toc a:focus  {
+			border-bottom-style: none;
+			text-decoration-style: solid;
+		}
+	}
+	/*
+	ul.toc li li li, ul.toc li li li ul {margin-left: 0; display: inline}
+	ul.toc li li li ul, ul.toc li li li ul li {margin-left: 0; display: inline}
+	*/
+
+	/* Section numbers in a column of their own */
+	ul.toc {
+		margin-left: 5em
+	}
+	ul.toc span.secno {
+		float: left;
+		width: 4em;
+		margin-left: -5em;
+	}
+	ul.toc ul ul span.secno {
+		margin-left: -7em;
+	}
+	/*ul.toc span.secno {text-align: right}*/
+	ul.toc li {
+		clear: both;
+	}
+	/* If we had 'tab', floats would not be needed here:
+		 ul.toc span.secno {tab: 5em right; margin-right: 1em}
+		 ul.toc li {text-indent: 5em hanging}
+	 The second line in case items wrap
+	*/
+
+/** At-risk List **************************************************************/
+	/* Style for At Risk features (intended as editorial aid, not intended for publishing) */
+
+	.atrisk::before {
+	 float: right;
+	 margin-top: -0.25em;
+	 padding: 0.5em 1em 0.5em 0;
+	 text-indent: -0.9em;
+	 border: 1px solid;
+	 content: '\25C0    Not yet widely implemented';
+	 white-space: pre;
+	 font-size: small;
+	 background-color: white;
+	 color: gray;
+	 text-align: center;
+	}
+
+	.toc .atrisk::before { content:none }
+
+/** Index *********************************************************************/
+
+	/* Index Lists: Layout */
+	ul.indexlist       { margin-left: 0; columns: 15em; -webkit-columns: 15em; text-indent: 1em hanging; }
+	ul.indexlist li    { margin-left: 0; list-style: none; break-inside: avoid; word-break: break-word; }
+	ul.indexlist li li { margin-left: 1em }
+	ul.indexlist dl    { margin-top: 0; }
+	ul.indexlist dt    { margin: .2em 0 .2em 20px;}
+	ul.indexlist dd    { margin: .2em 0 .2em 40px;}
+	/* Index Lists: Typography */
+	ul.indexlist ul,
+	ul.indexlist dl { font-size: smaller; }
+	ul.indexlist li span {
+		white-space: nowrap;
+		position: absolute;
+		color: transparent; }
+	ul.indexlist li a:hover + span,
+	ul.indexlist li a:focus + span {
+		color: gray;
+	}
+	@media print {
+		ul.indexlist li span { color: gray; }
+	}
+
+/** Property Index Tables *****************************************************/
+	/* See also the data table styling section, which this effectively subclasses */
+
+	table.proptable {
+		font-size: small;
+		border-collapse: collapse;
+		border-spacing: 0;
+		text-align: left;
+		margin: 1em 0;
+	}
+
+	table.proptable td,
+	table.proptable th {
+		padding: 0.4em;
+		text-align: center;
+	}
+
+	table.proptable tr:hover td {
+		background: #DEF;
+	}
+	.propdef th {
+		font-style: italic;
+		font-weight: normal;
+		text-align: left;
+		width: 3em;
+	}
+	/* The link in the first column in the property table (formerly a TD) */
+	table.proptable td .property,
+	table.proptable th .property {
+		display: block;
+		text-align: left;
+		font-weight: bold;
+	}
+
+/******************************************************************************/
+/*                                    Print                                   */
+/******************************************************************************/
+
+	@media print {
+		html {
+			margin: 0 !important; }
+		body {
+			font-family: serif; }
+		th, td {
+			font-family: inherit; }
+		a {
+			color: inherit !important; }
+
+		a:link, a:visited {
+			text-decoration: none !important }
+		a:link::after, a:visited::after { /* create a cross-ref "see..." */ }
+		.example::before {
+			font-family: serif !important; }
+	}
+	@page {
+		margin: 1.5cm 1.1cm;
+	}
+
+</style>
+  <link href="" rel="icon">
+  <meta content="Bikeshed 1.0.0" name="generator">
+ </head>
+ <body class="h-entry">
+  <div class="head">
+   <p data-fill-with="logo"><a class="logo" href="http://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/Icons/w3c_home" width="72"> </a> </p>
+   <h1 class="p-name no-ref" id="title">Keygen and Client Certificates</h1>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Working Draft, <time class="dt-updated" datetime="2015-11-30">30 November 2015</time></span></h2>
+   <div data-fill-with="spec-metadata">
+    <dl>
+     <dt>This version:
+     <dd><a class="u-url" href="http://www.w3.org/TR/2015/WD-client-certificates-1-20151130/">http://www.w3.org/TR/2015/WD-client-certificates-1-20151130/</a>
+     <dd><span></span>
+     <dt>Editor's Draft:
+     <dd><a href="https://w3ctag.github.io/client-certificates">https://w3ctag.github.io/client-certificates</a>
+     <dt>Feedback:
+     <dd><span><a href="mailto:www-tag@w3.org?subject=%5Bclient-certificates%5D%20YOUR%20TOPIC%20HERE">www-tag@w3.org</a> with subject line “<kbd>[client-certificates] <var>… message topic …</var></kbd>” (<a href="https://lists.w3.org/Archives/Public/www-tag/" rel="discussion">archives</a>)</span>
+     <dt class="editor">Editor:
+     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:travil@microsoft.com">Travis Leithead</a> (<a class="p-org org" href="https://www.microsoft.com/">Microsoft</a>)
+     <dt>Participate:
+     <dd><span><a href="https://github.com/w3ctag/client-certificates">GitHub w3ctag/client-certificates</a> (<a href="https://github.com/w3ctag/client-certificates/issues/new">file an issue</a>; <a href="https://github.com/w3ctag/client-certificates/issues?state=open">open issues</a>)</span>
+    </dl>
+   </div>
+   <div data-fill-with="warning"></div>
+   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2015 <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply. </p>
+   <hr title="Separator for header">
+  </div>
+  <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+  <div class="p-summary" data-fill-with="abstract">
+   <p>The TAG considers the HTML &lt;keygen> element and its use cases; related
+
+security issues are also reviewed and requirements and a recommendation to replace
+&lt;keygen> is presented.</p>
+  </div>
+  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <div data-fill-with="status">
+   <p> This document has been produced by the <a href="https://www.w3.org/2001/tag/">W3C Technical Architecture Group (TAG)</a>.
+  This document is a work in progress and represents the rough consensus of the TAG. </p>
+  </div>
+  <h2 class="no-num no-toc no-ref heading settled" id="contents"><span class="content">Table of Contents</span></h2>
+  <div data-fill-with="table-of-contents" role="navigation">
+   <ul class="toc" role="directory">
+    <li><a href="#keygen-and-use-cases"><span class="secno">1</span> <span class="content">&lt;keygen> and use cases</span></a>
+    <li><a href="#client-certificates-and-user-agents"><span class="secno">2</span> <span class="content">Client certificates and user agents</span></a>
+    <li>
+     <a href="#threat-model"><span class="secno">3</span> <span class="content">Threat Model</span></a>
+     <ul class="toc">
+      <li><a href="#user-agent-server-boundary"><span class="secno">3.1</span> <span class="content">User agent/server boundary</span></a>
+      <li><a href="#user-agent-secure-keystore-boundary"><span class="secno">3.2</span> <span class="content">User agent/secure keystore boundary</span></a>
+      <li><a href="#known-threats"><span class="secno">3.3</span> <span class="content">Known Threats</span></a>
+     </ul>
+    <li><a href="#principles"><span class="secno">4</span> <span class="content">Principles</span></a>
+    <li><a href="#replacing-keygen"><span class="secno">5</span> <span class="content">Replacing &lt;keygen></span></a>
+    <li><a href="#requirements-and-recommendations"><span class="secno">6</span> <span class="content">Requirements and Recommendations</span></a>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ul class="toc">
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
+     </ul>
+   </ul>
+  </div>
+  <main>
+   <h2 class="heading settled" data-level="1" id="keygen-and-use-cases"><span class="secno">1. </span><span class="content">&lt;keygen> and use cases</span><a class="self-link" href="#keygen-and-use-cases"></a></h2>
+   <p>The <a href="http://www.w3.org/TR/html5/forms.html#the-keygen-element">HTMLKeygenElement</a> <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a> enables web sites to generate a public/private key pair during form submission (see also <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">Public Key Cryptography</a>). &lt;keygen> is a browser feature grandfathered into the <a href="http://www.w3.org/TR/html5">HTML5 specification</a>. This element is a form-associated element with UI, but does not expose its generated private key to JavaScript. (Note: a Service Worker <a data-link-type="biblio" href="#biblio-service-workers">[service-workers]</a> may be able to retrieve the public key from a form submission request.) The private key is stored in a secured browser-managed or OS-managed key store on behalf of the user.</p>
+   <p>The primary use case for &lt;keygen> is to establish a trusted identity for an individual; the identity can later be used to authenticate to a web site or set of web sites. Because it uses an identity tied to a private key, authentication is fundamentally more secure than systems which use shared passwords.</p>
+   <p>Extending the above use case, &lt;keygen> is commonly the first stage in provisioning a user’s device to receive a client certificate. For example, &lt;keygen> is used to generate the key material for later inclusion in an X509 certificate. The certificate is intended to be long-lived and may serve to authenticate wireless accounts, educational portals, internal business intranets, etc.</p>
+   <p><img alt="Sequence diagram showing how keygen provisions a client certificate." src="images/sequence_diagram.png" style="width:100%"></p>
+   <p>The diagram above describes a typical scenario in which the &lt;keygen> element is used for provisioning a client certificate.</p>
+   <ol>
+    <li data-md="">
+     <p>The user agent navigates to a provisioning site (at a specific origin). The HTML resource containing the keygen element with optional challenge attribute is received by the user agent. The keygen element is included in a form intended to be submitted back to the server.</p>
+    <li data-md="">
+     <p>The user may select from among two options in the keygen element’s UI to choose a "weak" or "strong" key length.</p>
+    <li data-md="">
+     <p>The user submits the form. Alternately, JavaScript code in the user agent can submit the form. When submitted the keygen element causes an asymmetric key pair to be generated: a public and private key. These keys are not exposed via a DOM API (although the public key may be retrieved from the form in an installed Service Worker).</p>
+    <li data-md="">
+     <p>The private key is used to optionally sign a challenge and then it is placed into a secure key store (either browser or OS-provided).</p>
+    <li data-md="">
+     <p>The public key is encoded (ASN.1 DER) and submitted in the form to the server.</p>
+    <li data-md="">
+     <p>In the POST response, the server may have packaged the public key and other related information into a client certificate which is sent with an <code>application/x-x509-*-cert</code> mimetype to the user agent. The user agent relays this certificate into the user’s certificate store for later use.</p>
+   </ol>
+   <h2 class="heading settled" data-level="2" id="client-certificates-and-user-agents"><span class="secno">2. </span><span class="content">Client certificates and user agents</span><a class="self-link" href="#client-certificates-and-user-agents"></a></h2>
+   <p>Keygen is one way to generate the crypto material needed for a client certificate in the browser (the Web Crypto API <a data-link-type="biblio" href="#biblio-webcryptoapi">[webcryptoapi]</a> provides another--though it has drawbacks described later). Once a client certificate has been issued and registered with the user agent (either via a browser or OS-supplied certificate store), the certificate may be used for authentication. This is relatively uncommon; when it does happen, user agents do not provide a good experience.</p>
+   <p>A server can require a TLS client certificate to be used when it receives a request for a protected resource. The server may also include a challenge to be signed by the client as proof that the user has possession of the private key associated with the public key in the client certificate. Starting with the server’s response to the protected resource request, the experience typically follows this pattern:</p>
+   <ol>
+    <li data-md="">
+     <p>The user agent asks the user to select a client certificate to use in the negotiation (there may be more than one). One or more client certificates are presented to the user. Little effort is made to differentiate or extract meaningful information from each certificate in order to help the user select the right one. The user choses a certificate.</p>
+    <li data-md="">
+     <p>[Typically] a second prompt (issuing from the secure keystore) is presented to confirm and approve use of a private key in order to perform a signature (for the challenge). Unfortunately, little context is actually provided in the message presented to the user, making it unclear why and for what purpose the private key is being accessed.</p>
+    <li data-md="">
+     <p>The signed challenge and client certificate are sent to the server for verification to release the resource.</p>
+   </ol>
+   <p class="note" role="note">Note: The ability to use client certificates for authentication is currently not allowed in the HTTP2 protocol (it requires an older TLS re-negotiation protocol). The IETF is investigating how to improve support for client certificate authentication in HTTP2.</p>
+   <h2 class="heading settled" data-level="3" id="threat-model"><span class="secno">3. </span><span class="content">Threat Model</span><a class="self-link" href="#threat-model"></a></h2>
+   <p>User agents are now considering removing support for the &lt;keygen> element due (in part) to security issues present in its design and implementation. The following threat model frames these issues.</p>
+   <p>The trust boundaries in the threat model separate the user agent and server, as well as the user agent and secure keystore.</p>
+   <h3 class="heading settled" data-level="3.1" id="user-agent-server-boundary"><span class="secno">3.1. </span><span class="content">User agent/server boundary</span><a class="self-link" href="#user-agent-server-boundary"></a></h3>
+   <p>This trust boundary may be either protected via an HTTPS connection, or open using an untrusted link. The keygen element is not currently considered a "powerful feature" and thus it works in both insecure and secure contexts <a data-link-type="biblio" href="#biblio-powerful-features">[powerful-features]</a>. (Keygen would certainly be considered a powerful feature by today’s standards.) When using an insecure connection, the content provided by the server cannot be trusted, including the behavior of script from that resource.</p>
+   <h3 class="heading settled" data-level="3.2" id="user-agent-secure-keystore-boundary"><span class="secno">3.2. </span><span class="content">User agent/secure keystore boundary</span><a class="self-link" href="#user-agent-secure-keystore-boundary"></a></h3>
+   <p>Some user agents defer to their host OS to manage and secure crypto key material (an alternative, e.g., in Mozilla Firefox, is to have a browser-provided keystore). For host OS-managed cases, a trust boundary exists between the user agent and the OS (data that flows across this boundary is generally implicitly trusted). The risk to user agents relying on an OS-provided keystore is that changes to the keystore have a global impact on the user’s device. This is particularly dangerous if keystore changes happen without user-consent and automatically by script. Since the host OS’s keystore is a shared resource, all apps are put at risk. Of course, when the browser implements its own keystore, the risk to the OS and other applications is mitigated.</p>
+   <h3 class="heading settled" data-level="3.3" id="known-threats"><span class="secno">3.3. </span><span class="content">Known Threats</span><a class="self-link" href="#known-threats"></a></h3>
+   <ol>
+    <li data-md="">
+     <p>Untrusted script can launch denial-of-service attacks against the user’s keystore, since form submission (including keygen) does not require user action.</p>
+    <li data-md="">
+     <p>Keygen form submission has unmitigated access to the keystore; script can affect either 1) global OS state changes without user permission, or 2) origin-unaware certificate installation (in user agents that implement their own keystore). At a minimum, this violates the same origin policy.</p>
+    <li data-md="">
+     <p>While not specifically impacting keygen, user agents may automatically install client certificates via a special mime-type. As noted, this can affect state outside the boundary of the browser sandbox without user permission.</p>
+   </ol>
+   <h2 class="heading settled" data-level="4" id="principles"><span class="secno">4. </span><span class="content">Principles</span><a class="self-link" href="#principles"></a></h2>
+   <ul>
+    <li data-md="">
+     <p>Web pages must not be allowed to change shared state outside the browser sandbox without user permission; such permission may be indirectly granted by a related explicit user action. The user must be in control. This principle is correctly applied to resources such as cameras and microphones in WebRTC and Geolocation, which all ask for permission from the user before enabling access (which may simultaneously cause implicit revocation of the resource by another entity).</p>
+    <li data-md="">
+     <p>Users must be able to create identity on the web which can be shared with others. For example, people identify themselves using their Facebook or Twitter names: a site can then log them in using a form of redirected authentication involving facebook.com or twitter.com, and then can give them access to things, allow them to participate, etc, as a function of that identity. Public key based systems are generally superior to these in that they use private and public keys instead of passwords, and their strength is not tied to the user’s ability to generate a good password.</p>
+   </ul>
+   <h2 class="heading settled" data-level="5" id="replacing-keygen"><span class="secno">5. </span><span class="content">Replacing &lt;keygen></span><a class="self-link" href="#replacing-keygen"></a></h2>
+   <p>The keygen element should be replaced by a new API better suited for modern day application requirements. While keygen can conceivably be updated in some ways improve its hashing algorithm and container formats, for example, its function as an element tied to form submission locks it into a specific declarative protocol. While convenient in some respects, it is also limiting in that it is not very extensible, cannot be applied in scenarios outside of its protocol (e.g., outside of form submission scenarios), and isn’t designed with user-permission in mind. We believe keygen isn’t suitable for updating in its existing form; rather we think starting over with a new API untethered from the past has the better potential to succeed. In order to better understand the requirements for an API intended to replace keygen, we first consider where it is weak and what improvements should be made to meet modern requirements.</p>
+   <ul>
+    <li data-md="">
+     <p>The MD5 hashing algorithm, as currently defined in HTML5 and interoperably implemented in several user agents is quite dated. Security researchers now <b>recommend more secure hashing algorithms</b> such as SHA-2.</p>
+    <li data-md="">
+     <p>Keygen is a powerful feature. Its use <b>should be restricted to a secure context</b>.</p>
+    <li data-md="">
+     <p>Keygen must <b>not write private keys into origin-unaware keystores without user permission</b>. User permission must be granted prior to writing new private keys into any keystore (whether OS-provided or not).</p>
+    <li data-md="">
+     <p>Keygen’s operations are potentially compute-intensive and <b>should be async</b> in order to not block user interaction (as can happen in form submission currently). Async operation is also necessary for obtaining user permission.</p>
+    <li data-md="">
+     <p>Keygen’s container structure for uploading public key material to the server is dated. Alternative, or <b>author-defined container structures should be available</b>.</p>
+    <li data-md="">
+     <p><b>The user interface for keygen should be reconsidered</b>. Users are not in the best position to evaluate which type of key strength is needed. This is usually a requirement of the server. Perhaps no user interface is required.</p>
+    <li data-md="">
+     <p><b>Add basic extensibility to keygen</b>, such as the capability to add additional meta-data requests for client certificate extensions, certificate expiration requests, etc.</p>
+   </ul>
+   <p>Additionally, any installation of a client certificate (e.g., the <code>application/x-x509-*-cert</code> mimetype) must also require user consent.</p>
+   <p>In seeking for a replacement to keygen, we also consider what capabilities are already provided by the Web Crypto API:</p>
+   <ul>
+    <li data-md="">
+     <p>The <code>CryptoKey</code> interface is designed as a general read-only abstraction over key material. The object itself can be used as a proxy for the key material without disclosing the actual key material.</p>
+    <li data-md="">
+     <p>APIs needed to generate public/private <code>CryptoKey</code> objects are already defined (<code>generateKey</code>/<code>deriveKey</code>).</p>
+    <li data-md="">
+     <p>A flag is available to protect the key material from extraction (the <code>extractable</code> flag in the generation APIs).</p>
+   </ul>
+   <p>Unfortunately, the current capabilities in the Web Crypto API are unsuitable as a direct-replacement for keygen because:</p>
+   <ul>
+    <li data-md="">
+     <p>Protection of the private key material in the <code>CryptoKey</code> is opt-in.</p>
+    <li data-md="">
+     <p>There is no mechanism to write to the device’s secure keystore (if available)</p>
+   </ul>
+   <p>However, the objects and abstractions defined in the Web Crypto API are a good foundation on which to design a replacement for keygen. We note that provisioning of keys is currently <a href="http://www.w3.org/TR/WebCryptoAPI/#scope-out-of-scope">declared out-of-scope</a> in the current Web Crypto API spec. New work on a keygen replacement would have key provisioning in scope.</p>
+   <h2 class="heading settled" data-level="6" id="requirements-and-recommendations"><span class="secno">6. </span><span class="content">Requirements and Recommendations</span><a class="self-link" href="#requirements-and-recommendations"></a></h2>
+   <p>In order to replace keygen and simultaneously provide a better way for establishing a trusted identity on the web, we recognize the following requirements. The solution:</p>
+   <ul>
+    <li data-md="">
+     <p>should be similar in workflow and user experience to creating an account with a password. It would omit the steps of checking if the user has picked a strong password including redundant password verification steps.</p>
+    <li data-md="">
+     <p>should include a mechanism to associate some personal information (e.g., a nickname, color, picture, biometric, etc) to the key so that it can be readily selected in the future.</p>
+    <li data-md="">
+     <p>must be considered a "powerful feature" and only available under secure contexts.</p>
+    <li data-md="">
+     <p>must not release the raw private key material to script at any time. Private keys used as a basis for a person’s identity should be considered sensitive such that even script should not be trusted with access to the key material.</p>
+    <li data-md="">
+     <p>must be async and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user’s environment outside the scope of web page and the user must be aware of and authorize any such changes.</p>
+    <li data-md="">
+     <p>must be async and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.</p>
+    <li data-md="">
+     <p>should allow the user to delegate the key persistence and generation to separate secure hardware. Different key generation scenarios may require different assurances in relation to the keystore and/or key generation.</p>
+   </ul>
+   <p>Given these requirements, we recognize that an "improved keygen element" could be built using the new solution as a foundation (e.g., using web components).</p>
+   <p>We also call on implementations to improve the client certificate UI experience in order to make client-certificate use in authentication more accessible to general users.</p>
+  </main>
+  <h2 class="no-num heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="no-num heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-webcryptoapi"><a class="self-link" href="#biblio-webcryptoapi"></a>[WebCryptoAPI]
+   <dd>Ryan Sleevi; Mark Watson. <a href="https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html">Web Cryptography API</a>. 11 December 2014. CR. URL: <a href="https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html">https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html</a>
+   <dt id="biblio-html5"><a class="self-link" href="#biblio-html5"></a>[HTML5]
+   <dd>Ian Hickson; et al. <a href="http://www.w3.org/html/wg/drafts/html/master/">HTML5</a>. 28 October 2014. REC. URL: <a href="http://www.w3.org/html/wg/drafts/html/master/">http://www.w3.org/html/wg/drafts/html/master/</a>
+   <dt id="biblio-powerful-features"><a class="self-link" href="#biblio-powerful-features"></a>[POWERFUL-FEATURES]
+   <dd>Mike West; Yan Zhu. <a href="https://w3c.github.io/webappsec/specs/powerfulfeatures/">Privileged Contexts</a>. 24 April 2015. WD. URL: <a href="https://w3c.github.io/webappsec/specs/powerfulfeatures/">https://w3c.github.io/webappsec/specs/powerfulfeatures/</a>
+   <dt id="biblio-service-workers"><a class="self-link" href="#biblio-service-workers"></a>[SERVICE-WORKERS]
+   <dd>Alex Russell; Jungkee Song; Jake Archibald. <a href="https://slightlyoff.github.io/ServiceWorker/spec/service_worker/">Service Workers</a>. 25 June 2015. WD. URL: <a href="https://slightlyoff.github.io/ServiceWorker/spec/service_worker/">https://slightlyoff.github.io/ServiceWorker/spec/service_worker/</a>
+  </dl>
+ </body>
+</html>
