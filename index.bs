@@ -11,7 +11,6 @@ Abstract: The TAG considers the HTML &lt;keygen> element and its use cases; rela
 	&lt;keygen> is presented.
 Default Biblio Status: current 
 !Participate: <a href="https://github.com/w3ctag/client-certificates">GitHub w3ctag/client-certificates</a> (<a href="https://github.com/w3ctag/client-certificates/issues/new">file an issue</a>; <a href="https://github.com/w3ctag/client-certificates/issues?state=open">open issues</a>)
-!This version:
 </pre> 
 
 # &lt;keygen> and use cases
