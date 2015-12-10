@@ -38,7 +38,7 @@ Keygen is one way to generate the crypto material needed for a client certificat
 
 A server can require a TLS client certificate to be used when it receives a request for a protected resource. The server may also include a challenge to be signed by the client as proof that the user has possession of the private key associated with the public key in the client certificate. Starting with the server's response to the protected resource request, the experience typically follows this pattern:
 
-1. The user agent asks the user to select a client certificate to use in the negotiation (there may be more than one). One or more client certificates are presented to the user. Little effort is made to differentiate or extract meaningful information from each certificate in order to help the user select the right one. The user choses a certificate.
+1. The user agent asks the user to select a client certificate to use in the negotiation (there may be more than one). One or more client certificates are presented to the user. Little effort is made to differentiate or extract meaningful information from each certificate in order to help the user select the right one. The user chooses a certificate.
 2. [Typically] a second prompt (issuing from the secure keystore) is presented to confirm and approve use of a private key in order to perform a signature (for the challenge). Unfortunately, little context is actually provided in the message presented to the user, making it unclear why and for what purpose the private key is being accessed.
 3. The signed challenge and client certificate are sent to the server for verification to release the resource.
 
