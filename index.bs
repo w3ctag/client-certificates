@@ -77,7 +77,7 @@ The keygen element should be replaced by a new API better suited for modern day 
 * The MD5 hashing algorithm, as currently defined in HTML5 and interoperably implemented in several user agents is quite dated. Security researchers now <b>recommend more secure hashing algorithms</b> such as SHA-2.
 * Keygen is a powerful feature. Its use <b>should be restricted to a secure context</b>.
 * Keygen must <b>not write private keys into origin-unaware keystores without user permission</b>. User permission must be granted prior to writing new private keys into any keystore (whether OS-provided or not).
-* Keygen's operations are potentially compute-intensive and <b>should be async</b> in order to not block user interaction (as can happen in form submission currently). Async operation is also necessary for obtaining user permission.
+* Keygen's operations are potentially compute-intensive and <b>should be asynchronous</b> in order to not block user interaction (as can happen in form submission currently). Asynchronous operation is also necessary for obtaining user permission.
 * Keygen's container structure for uploading public key material to the server is dated. Alternative, or <b>author-defined container structures should be available</b>.
 * <b>The user interface for keygen should be reconsidered</b>. Users are not in the best position to evaluate which type of key strength is needed. This is usually a requirement of the server. Perhaps no user interface is required.
 * <b>Add basic extensibility to keygen</b>, such as the capability to add additional meta-data requests for client certificate extensions, certificate expiration requests, etc.
@@ -105,8 +105,8 @@ In order to replace keygen and simultaneously provide a better way for establish
 * should include a mechanism to associate some personal information (e.g., a nickname, color, picture, biometric, etc) to the key so that it can be readily selected in the future.
 * must be considered a "powerful feature" and only available under secure contexts.
 * must not release the raw private key material to script at any time. Private keys used as a basis for a person's identity should be considered sensitive such that even script should not be trusted with access to the key material.
-* must be async and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user's environment outside the scope of web page and the user must be aware of and authorize any such changes. 
-* must be async and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.
+* must be asynchronous and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user's environment outside the scope of web page and the user must be aware of and authorize any such changes. 
+* must be asynchronous and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.
 * should allow the user to delegate the key persistence and generation to separate secure hardware. Different key generation scenarios may require different assurances in relation to the keystore and/or key generation.
 
 Given these requirements, we recognize that an "improved keygen element" could be built using the new solution as a foundation (e.g., using web components).

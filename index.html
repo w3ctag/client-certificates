@@ -1112,7 +1112,7 @@ security issues are also reviewed and requirements and a recommendation to repla
     <li data-md="">
      <p>Keygen must <b>not write private keys into origin-unaware keystores without user permission</b>. User permission must be granted prior to writing new private keys into any keystore (whether OS-provided or not).</p>
     <li data-md="">
-     <p>Keygen’s operations are potentially compute-intensive and <b>should be async</b> in order to not block user interaction (as can happen in form submission currently). Async operation is also necessary for obtaining user permission.</p>
+     <p>Keygen’s operations are potentially compute-intensive and <b>should be asynchronous</b> in order to not block user interaction (as can happen in form submission currently). Asynchronous operation is also necessary for obtaining user permission.</p>
     <li data-md="">
      <p>Keygen’s container structure for uploading public key material to the server is dated. Alternative, or <b>author-defined container structures should be available</b>.</p>
     <li data-md="">
@@ -1150,9 +1150,9 @@ security issues are also reviewed and requirements and a recommendation to repla
     <li data-md="">
      <p>must not release the raw private key material to script at any time. Private keys used as a basis for a person’s identity should be considered sensitive such that even script should not be trusted with access to the key material.</p>
     <li data-md="">
-     <p>must be async and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user’s environment outside the scope of web page and the user must be aware of and authorize any such changes.</p>
+     <p>must be asynchronous and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user’s environment outside the scope of web page and the user must be aware of and authorize any such changes.</p>
     <li data-md="">
-     <p>must be async and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.</p>
+     <p>must be asynchronous and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.</p>
     <li data-md="">
      <p>should allow the user to delegate the key persistence and generation to separate secure hardware. Different key generation scenarios may require different assurances in relation to the keystore and/or key generation.</p>
    </ul>
