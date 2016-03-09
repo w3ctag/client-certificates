@@ -17,7 +17,7 @@ Default Biblio Status: current
 
 The <a href="http://www.w3.org/TR/html5/forms.html#the-keygen-element">HTMLKeygenElement</a> [[HTML5]] enables web sites to generate a public/private key pair during form submission (see also <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">Public Key Cryptography</a>). &lt;keygen> is a browser feature grandfathered into the <a href="http://www.w3.org/TR/html5">HTML5 specification</a>. This element is a form-associated element with UI, but does not expose its generated private key to JavaScript. (Note: a Service Worker [[service-workers]] may be able to retrieve the public key from a form submission request.) The private key is stored in a secured browser-managed or OS-managed key store on behalf of the user.
 
-The primary use case for &lt;keygen> is to establish a trusted identity for an individual; the identity can later be used to authenticate to a web site or set of web sites. Because it uses an identity tied to a private key, authentication is fundamentally more secure than systems which use shared passwords. 
+The primary use case for &lt;keygen> is to establish a trusted identity for an individual; the identity can later be used to authenticate to a web site or set of web sites. Because it uses an identity tied to a private key (that at no point is shared with the server), authentication is fundamentally more secure than systems which use shared passwords. 
  
 Extending the above use case, &lt;keygen> is commonly the first stage in provisioning a user's device to receive a client certificate. For example, &lt;keygen> is used to generate the key material for later inclusion in an X509 certificate. The certificate is intended to be long-lived and may serve to authenticate wireless accounts, educational portals, internal business intranets, etc.
 
@@ -36,11 +36,13 @@ The diagram above describes a typical scenario in which the &lt;keygen> element 
 
 Keygen is one way to generate the crypto material needed for a client certificate in the browser (the Web Crypto API [[webcryptoapi]] provides another--though it has drawbacks described later). Once a client certificate has been issued and registered with the user agent (either via a browser or OS-supplied certificate store), the certificate may be used for authentication. This is relatively uncommon; when it does happen, user agents do not provide a good experience.
 
-A server can require a TLS client certificate to be used when it receives a request for a protected resource. The server may also include a challenge to be signed by the client as proof that the user has possession of the private key associated with the public key in the client certificate. Starting with the server's response to the protected resource request, the experience typically follows this pattern:
+A server can require a TLS client certificate to be used when it receives a request for a protected resource. It announces this during the TLS negotation (or requires 're'negotiation when a URI with more stringent rules is accessed).  The server may also include a challenge to be signed by the client as proof that the user has possession of the private key associated with the public key in the client certificate. Starting with the server's response to the protected resource request, the experience typically follows this pattern:
 
-1. The user agent asks the user to select a client certificate to use in the negotiation (there may be more than one). One or more client certificates are presented to the user. Little effort is made to differentiate or extract meaningful information from each certificate in order to help the user select the right one. The user choses a certificate.
-2. [Typically] a second prompt (issuing from the secure keystore) is presented to confirm and approve use of a private key in order to perform a signature (for the challenge). Unfortunately, little context is actually provided in the message presented to the user, making it unclear why and for what purpose the private key is being accessed.
+1. The user agent asks the user to select a client certificate to use in the negotiation (there may be more than one). One or more client certificates are presented to the user. Most browsers use the list of acceptable CAs from the TLS negotiation (when present) to winnow down the list of options presented; or will present a list of all of them when none seemingly matches or the server does not provide a list.  Little effort is made to differentiate or extract meaningful information from each certificate in order to help the user select the right one. In general the 'DN' is shown; which usually contains something like the users own name or his organisations affiliation. The user choses a certificate.
+2. [Typically] a second prompt (issuing from the secure keystore) is presented to confirm and approve use of a private key in order to perform a signature (for the challenge). Unfortunately, little context is actually provided in the message presented to the user, making it unclear why and for what purpose the private key is being accessed. It general takes the form of a 'enter your password' for this website.
 3. The signed challenge and client certificate are sent to the server for verification to release the resource.
+
+A specific, yet common, scenario is when a site only requires the use of a certificate for certain URLs (e.g. anything under /secret); yet not on the main URI. In this case merely browsing to such a URL will bring up a prompt as per step 1 (The website XXX wants to authenticate with a client certificate; with a pull down to select one). These prompts tend to be generic and site oriented - with no reference to the URL or the fact that it is -additional- security that is needed. This often confuses users; especially when the user had already used a lesser authentication means (e.g. username and password) elsewhere on the site.
 
 Note: The ability to use client certificates for authentication is currently not allowed in the HTTP2 protocol (it requires an older TLS re-negotiation protocol). The IETF is investigating how to improve support for client certificate authentication in HTTP2.
 
@@ -63,6 +65,7 @@ Some user agents defer to their host OS to manage and secure crypto key material
 1. Untrusted script can launch denial-of-service attacks against the user's keystore, since form submission (including keygen) does not require user action.
 2. Keygen form submission has unmitigated access to the keystore; script can affect either 1) global OS state changes without user permission, or 2) origin-unaware certificate installation (in user agents that implement their own keystore). At a minimum, this violates the same origin policy.
 3. While not specifically impacting keygen, user agents may automatically install client certificates via a special mime-type. As noted, this can affect state outside the boundary of the browser sandbox without user permission.
+4. The primary identification of a certificate (as shown to the user in step 1 of the authentication process) is that by ether most of the Distingished Name (DN) or by just its (first) element, the Common Name. When a certificate is created (with the users public key to be subsequently signed) the DN is under (full) control of the server. It is therefore possible, especially if the previous step '3' is weak; for an adversary to put an identical (or credible) looking entry into the pull-down choise menu of the user. Often browsers allow control of the order (through the expire date; also set by the server). This makes it easy to trick a user in using the wrong certificate or to 'spring clean' his real certificate.
 
 # Principles
 
@@ -83,6 +86,8 @@ The keygen element should be replaced by a new API better suited for modern day 
 * <b>Add basic extensibility to keygen</b>, such as the capability to add additional meta-data requests for client certificate extensions, certificate expiration requests, etc.
 
 Additionally, any installation of a client certificate (e.g., the <code>application/x-x509-*-cert</code> mimetype) must also require user consent.
+
+Finaly - it may be desirable to give the user some level of control over the labeling of the certificate - i.e. how it is presented in the user interface. This is especially important when the user also uses smartcard or OS level certificates.
 
 In seeking for a replacement to keygen, we also consider what capabilities are already provided by the Web Crypto API:
 
@@ -107,7 +112,8 @@ In order to replace keygen and simultaneously provide a better way for establish
 * must not release the raw private key material to script at any time. Private keys used as a basis for a person's identity should be considered sensitive such that even script should not be trusted with access to the key material.
 * must be async and require user permission to install the private key into any origin-independent shared persistent storage. Unlike origin-specific storage which follows the same-origin policy, origin-unaware (or general use) storage represents a change to the user's environment outside the scope of web page and the user must be aware of and authorize any such changes. 
 * must be async and require user permission to use a private key from any origin-independent shared persistent storage. This is needed in order to protect the privacy of the private key.
-* should allow the user to delegate the key persistence and generation to separate secure hardware. Different key generation scenarios may require different assurances in relation to the keystore and/or key generation.
+* should allow the user to delegate the key persistence and generation to separate secure hardware. Different key generation scenarios may require different assurances in relation to the keystore and/or key generation. 
+* may consider the issue of (inadvertent/non-consensual) disclosure of the possesion of a client certificate to a server (ether renumeratin or a specific 'check' for a certificate issued by a specific list of CAs).
 
 Given these requirements, we recognize that an "improved keygen element" could be built using the new solution as a foundation (e.g., using web components).
 
